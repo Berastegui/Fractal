@@ -21,7 +21,7 @@ public class Fractal
         this.yCenter = yCenter;
         this.nbIte = nbIte;
         this.length = Math.sqrt(Math.pow(xCenter-xStart, 2)+Math.pow(yCenter-yStart, 2));
-        this.alpha = xCenter==xStart?0:Math.atan((yCenter-yStart)/(xCenter-xStart));
+        this.alpha = calculateAlpha(xStart,yStart,xCenter,yCenter);
         if(nbIte>0) {
             int n = xs.size();
             for(int i =0; i<n; i++) {
@@ -35,7 +35,12 @@ public class Fractal
     }
     
     private double calculateAlpha(double x, double y) {
-        return x==xCenter?0:Math.atan((y-yCenter)/(x-xCenter));
+        return calculateAlpha(xCenter,yCenter ,x,y);
+    }
+    
+    private double calculateAlpha(double x0, double y0,double x1, double y1) {
+        double alpha =  x1==x0?Math.PI/2:x1>x0?Math.atan((y1-y0)/(x1-x0)):Math.atan((y1-y0)/(x1-x0))+Math.PI;
+        return alpha;
     }
     
     private Fractal getSubFractal(ArrayList<Double> xs, ArrayList<Double>ys, int rank) {
@@ -67,6 +72,22 @@ public class Fractal
         for(Fractal f : fractals) {
             f.print();
         }
+    }
+    
+
+    
+    public ArrayList<Double> getPoints() {
+        ArrayList<Double> points = new ArrayList<Double>();
+        
+        points.add(xStart);
+        points.add(yStart);
+        points.add(xCenter);
+        points.add(yCenter);
+        
+        for(Fractal f : fractals) {
+            points.addAll(f.getPoints());
+        }
+        return points;
     }
     
     
